@@ -1,4 +1,4 @@
-package net.b0n541;
+package net.b0n541.board;
 
 import java.util.ArrayList;
 import java.util.List;

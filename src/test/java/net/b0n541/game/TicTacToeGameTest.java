@@ -1,7 +1,11 @@
-package net.b0n541;
+package net.b0n541.game;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import net.b0n541.game.GameResult;
+import net.b0n541.game.TicTacToeGame;
+import net.b0n541.player.RandomPlayer;
 
 import org.junit.Before;
 import org.junit.Test;

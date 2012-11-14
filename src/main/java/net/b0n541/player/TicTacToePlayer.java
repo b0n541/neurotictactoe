@@ -1,4 +1,4 @@
-package net.b0n541;
+package net.b0n541.player;
 
 import java.awt.Point;
 

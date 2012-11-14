@@ -1,6 +1,9 @@
-package net.b0n541;
+package net.b0n541.game;
 
 import static org.junit.Assert.assertEquals;
+
+import net.b0n541.board.TicTacToeBoard;
+import net.b0n541.game.GameResult;
 
 import org.junit.Test;
 

@@ -1,9 +1,10 @@
-package net.b0n541;
+package net.b0n541.player;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 public class RandomPlayer extends AbstractPlayer implements TicTacToePlayer {
 

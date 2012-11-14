@@ -1,4 +1,6 @@
-package net.b0n541;
+package net.b0n541.game;
+
+import net.b0n541.board.TicTacToeBoard;
 
 public enum GameResult {
 	UNDECIDED, X_WON, O_WON, DRAW;

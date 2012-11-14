@@ -1,6 +1,8 @@
-package net.b0n541;
+package net.b0n541.player;
 
 import java.awt.Point;
+
+import net.b0n541.board.TicTacToeBoard;
 
 public abstract class AbstractPlayer implements TicTacToePlayer {
 

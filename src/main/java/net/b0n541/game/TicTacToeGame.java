@@ -1,10 +1,13 @@
-package net.b0n541;
+package net.b0n541.game;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.b0n541.board.TicTacToeBoard;
+import net.b0n541.player.TicTacToePlayer;
 
 public class TicTacToeGame {
 
