@@ -1,6 +1,7 @@
 package net.b0n541.game;
 
 import net.b0n541.board.TicTacToeBoard;
+import net.b0n541.player.MoveSymbol;
 
 public enum GameResult {
 	UNDECIDED, X_WON, O_WON, DRAW;
@@ -29,7 +30,7 @@ public enum GameResult {
 		GameResult result = UNDECIDED;
 		for (int y = 0; y < 3 && result == UNDECIDED; y++) {
 
-			String firstMove = board.getFieldValue(0, y);
+			MoveSymbol firstMove = board.getFieldValue(0, y);
 			boolean allMovesTheSame = true;
 			if (firstMove != null) {
 				for (int x = 1; x < 3; x++) {
@@ -49,7 +50,7 @@ public enum GameResult {
 		GameResult result = UNDECIDED;
 		for (int x = 0; x < 3 && result == UNDECIDED; x++) {
 
-			String firstMove = board.getFieldValue(x, 0);
+			MoveSymbol firstMove = board.getFieldValue(x, 0);
 			boolean allMovesTheSame = true;
 			if (firstMove != null) {
 				for (int y = 1; y < 3; y++) {
@@ -79,10 +80,10 @@ public enum GameResult {
 		return result;
 	}
 
-	private static GameResult getWinner(String move) {
-		if ("X".equals(move)) {
+	private static GameResult getWinner(MoveSymbol symbol) {
+		if (MoveSymbol.X == symbol) {
 			return X_WON;
-		} else if ("O".equals(move)) {
+		} else if (MoveSymbol.O == symbol) {
 			return O_WON;
 		}
 		return UNDECIDED;

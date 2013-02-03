@@ -1,12 +1,10 @@
 package net.b0n541.player;
 
-import java.awt.Point;
-
 public interface TicTacToePlayer {
 
-	public void startGame();
+	public void startGame(MoveSymbol symbol);
 
-	public Point getNextMove();
+	public Move getNextMove();
 
-	public void setNextMove(String moveSymbol, Point move);
+	public void setNextMove(Move move);
 }

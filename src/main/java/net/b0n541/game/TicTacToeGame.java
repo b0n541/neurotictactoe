@@ -1,60 +1,47 @@
 package net.b0n541.game;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.b0n541.board.TicTacToeBoard;
+import net.b0n541.player.Move;
+import net.b0n541.player.MoveSymbol;
 import net.b0n541.player.TicTacToePlayer;
 
 public class TicTacToeGame {
 
 	private TicTacToeBoard board = new TicTacToeBoard();
-	private boolean finished = false;
 
-	private List<TicTacToePlayer> player = new ArrayList<TicTacToePlayer>();
-	private Map<TicTacToePlayer, String> moveSymbols = new HashMap<TicTacToePlayer, String>();
+	private List<TicTacToePlayer> player = new ArrayList<>();
+	private Map<TicTacToePlayer, MoveSymbol> moveSymbols = new HashMap<>();
 
 	public TicTacToeGame(TicTacToePlayer player1, TicTacToePlayer player2) {
 		player.add(player1);
 		player.add(player2);
-		moveSymbols.put(player1, "X");
-		moveSymbols.put(player2, "O");
+		moveSymbols.put(player1, MoveSymbol.X);
+		moveSymbols.put(player2, MoveSymbol.O);
 	}
 
 	public void run() {
 
-		for (TicTacToePlayer currPlayer : player) {
-			currPlayer.startGame();
-		}
+		player.get(0).startGame(MoveSymbol.X);
+		player.get(1).startGame(MoveSymbol.O);
 
-		int move = -1;
-		while (!finished) {
-
-			move++;
-			Point nextMove = getNextPlayer(move).getNextMove();
-			board.setMove(moveSymbols.get(getNextPlayer(move)), nextMove.x,
-					nextMove.y);
+		int moveNo = -1;
+		do {
+			moveNo++;
+			Move nextMove = getNextPlayer(moveNo).getNextMove();
+			board.setMove(nextMove);
 			for (TicTacToePlayer currPlayer : player) {
-				currPlayer.setNextMove(moveSymbols.get(getNextPlayer(move)),
-						nextMove);
+				currPlayer.setNextMove(nextMove);
 			}
-
-			if (getGameResult() == GameResult.X_WON
-					|| getGameResult() == GameResult.O_WON || move == 8) {
-				finished = true;
-			}
-		}
+		} while (getGameResult() == GameResult.UNDECIDED);
 	}
 
-	public boolean isFinished() {
-		return finished;
-	}
-
-	private TicTacToePlayer getNextPlayer(int move) {
-		return player.get(move % 2);
+	private TicTacToePlayer getNextPlayer(int moveNo) {
+		return player.get(moveNo % 2);
 	}
 
 	public GameResult getGameResult() {
