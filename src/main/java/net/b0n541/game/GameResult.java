@@ -4,7 +4,7 @@ import net.b0n541.board.TicTacToeBoard;
 import net.b0n541.player.MoveSymbol;
 
 public enum GameResult {
-	UNDECIDED, X_WON, O_WON, DRAW;
+	UNDECIDED, X, O, DRAW;
 
 	public static GameResult valueOf(TicTacToeBoard board) {
 		GameResult result = UNDECIDED;
@@ -82,9 +82,9 @@ public enum GameResult {
 
 	private static GameResult getWinner(MoveSymbol symbol) {
 		if (MoveSymbol.X == symbol) {
-			return X_WON;
+			return X;
 		} else if (MoveSymbol.O == symbol) {
-			return O_WON;
+			return O;
 		}
 		return UNDECIDED;
 	}

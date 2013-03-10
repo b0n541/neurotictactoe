@@ -15,4 +15,9 @@ public class Move {
 	public Move(MoveSymbol symbol, int x, int y) {
 		this(symbol, new Point(x, y));
 	}
+
+	@Override
+	public String toString() {
+		return location.toString() + " " + symbol;
+	}
 }

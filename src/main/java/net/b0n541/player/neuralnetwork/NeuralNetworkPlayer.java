@@ -1,10 +1,16 @@
 package net.b0n541.player.neuralnetwork;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
+import net.b0n541.game.GameResult;
 import net.b0n541.player.AbstractPlayer;
 import net.b0n541.player.Move;
+import net.b0n541.player.MoveSymbol;
 
 public class NeuralNetworkPlayer extends AbstractPlayer {
 
@@ -12,44 +18,68 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 	private static final double INACTIVE = 0.0;
 	private static final double ACTIVE = 1.0;
 
-	int[] hiddenLayers = { 10 };
-	NetworkTopology topo = new NetworkTopology(INPUT_COUNT, 1,
+	int[] hiddenLayers = { 18 };
+	NetworkTopology topo = new NetworkTopology(INPUT_COUNT, 3,
 			hiddenLayers.length, hiddenLayers);
-	NeuralNetwork network = new EncogNetworkWrapper(topo, false);
+	NeuralNetwork network = new EncogNetworkWrapper(topo, true);
 
-	List<Move> gameMoves = new ArrayList<>();
+	List<double[]> gameInputs = new ArrayList<>();
 
 	@Override
 	protected void prepareForGame() {
-		gameMoves.clear();
+		gameInputs.clear();
 	}
 
 	@Override
 	public Move getNextMove() {
 
-		Move result = getBestMove();
-		gameMoves.add(result);
-
-		return result;
-	}
-
-	private Move getBestMove() {
-
-		Move result = null;
-		double bestOutcome = -1000.0;
 		double[] oldMoves = getNetworkInputsForOldMoves();
-		for (Move move : getPossibleMoves()) {
+		List<Move> possibleMoves = getPossibleMoves();
+		Map<Move, double[]> moveInputs = new HashMap<>();
+		Map<Move, double[]> moveOutputs = new HashMap<>();
+
+		for (Move move : possibleMoves) {
 
 			double[] inputs = oldMoves.clone();
 			// set next move
-			inputs[move.location.y * move.location.x + move.location.x] = ACTIVE;
+			inputs[move.location.y * 3 + move.location.x] = ACTIVE;
+			moveInputs.put(move, inputs);
+			// ask network
+			double[] outcome = network.getPredictedOutcome(inputs);
+			moveOutputs.put(move, outcome);
+		}
 
-			double outcome = network.getPredictedOutcome(inputs);
-			if (outcome > bestOutcome) {
-				bestOutcome = outcome;
-				result = move;
+		Move bestWonMove = null;
+		double bestWonOutcome = 0.25;
+		Move bestDrawMove = null;
+		double bestDrawOutcome = 0.5;
+		for (Entry<Move, double[]> entry : moveOutputs.entrySet()) {
+			if (entry.getValue()[0] > bestWonOutcome) {
+				bestWonMove = entry.getKey();
+				bestWonOutcome = entry.getValue()[0];
+			}
+			if (entry.getValue()[2] > bestDrawOutcome) {
+				bestDrawMove = entry.getKey();
+				bestDrawOutcome = entry.getValue()[2];
 			}
 		}
+
+		Move result = null;
+		if (bestWonMove != null && bestWonOutcome > 0.5) {
+			result = bestWonMove;
+		}
+		// else if (bestDrawMove != null && bestDrawOutcome > bestWonOutcome) {
+		// result = bestDrawMove;
+		// }
+
+		if (result == null) {
+			// play random move
+			Random random = new Random();
+			result = possibleMoves.get(random.nextInt(possibleMoves.size()));
+		}
+
+		gameInputs.add(moveInputs.get(result));
+
 		return result;
 	}
 
@@ -57,22 +87,47 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 		double[] inputs = new double[INPUT_COUNT];
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
-				if (symbol == board.getFieldValue(x, y)) {
-					// players moves
-					inputs[y * x + x] = ACTIVE;
-					inputs[INPUT_COUNT / 2 + y * x + x] = INACTIVE;
-				} else if (symbol == board.getFieldValue(x, y)) {
-					// opponents moves
-					inputs[y * x + x] = INACTIVE;
-					inputs[INPUT_COUNT / 2 + y * x + x] = ACTIVE;
-				} else {
+				if (board.getFieldValue(x, y) == null) {
 					// empty field
-					inputs[y * x + x] = INACTIVE;
-					inputs[INPUT_COUNT / 2 + y * x + x] = INACTIVE;
+					inputs[y * 3 + x] = INACTIVE;
+					inputs[INPUT_COUNT / 2 + y * 3 + x] = INACTIVE;
+				} else if (symbol == board.getFieldValue(x, y)) {
+					// players moves
+					inputs[y * 3 + x] = ACTIVE;
+					inputs[INPUT_COUNT / 2 + y * 3 + x] = INACTIVE;
+				} else if (symbol != board.getFieldValue(x, y)) {
+					// opponents moves
+					inputs[y * 3 + x] = INACTIVE;
+					inputs[INPUT_COUNT / 2 + y * 3 + x] = ACTIVE;
 				}
 			}
 		}
 
 		return inputs;
+	}
+
+	@Override
+	public void finishGame(GameResult result) {
+		double[] expectedOutput = getOutputsForGameResult(result);
+		for (double[] input : gameInputs) {
+			network.adjustWeights(input, expectedOutput);
+		}
+	}
+
+	private double[] getOutputsForGameResult(GameResult result) {
+		if (result == GameResult.X && symbol == MoveSymbol.X
+				|| result == GameResult.O && symbol == MoveSymbol.O) {
+			// game won
+			return new double[] { 1.0, 0.0, 0.0 };
+		} else if (result == GameResult.X && symbol == MoveSymbol.O
+				|| result == GameResult.O && symbol == MoveSymbol.X) {
+			// game lost
+			return new double[] { 0.0, 1.0, 0.0 };
+		} else if (result == GameResult.DRAW) {
+			// draw
+			return new double[] { 0.0, 0.0, 1.0 };
+		}
+
+		throw new IllegalArgumentException("Invalid game result: " + result);
 	}
 }

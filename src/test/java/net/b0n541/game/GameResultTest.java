@@ -16,21 +16,21 @@ public class GameResultTest {
 		board.setMove(new Move(MoveSymbol.X, 1, 0));
 		board.setMove(new Move(MoveSymbol.X, 2, 0));
 
-		assertEquals(GameResult.X_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.X, GameResult.valueOf(board));
 
 		board = new TicTacToeBoard();
 		board.setMove(new Move(MoveSymbol.O, 0, 1));
 		board.setMove(new Move(MoveSymbol.O, 1, 1));
 		board.setMove(new Move(MoveSymbol.O, 2, 1));
 
-		assertEquals(GameResult.O_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.O, GameResult.valueOf(board));
 
 		board = new TicTacToeBoard();
 		board.setMove(new Move(MoveSymbol.X, 0, 2));
 		board.setMove(new Move(MoveSymbol.X, 1, 2));
 		board.setMove(new Move(MoveSymbol.X, 2, 2));
 
-		assertEquals(GameResult.X_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.X, GameResult.valueOf(board));
 	}
 
 	@Test
@@ -40,21 +40,21 @@ public class GameResultTest {
 		board.setMove(new Move(MoveSymbol.X, 0, 1));
 		board.setMove(new Move(MoveSymbol.X, 0, 2));
 
-		assertEquals(GameResult.X_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.X, GameResult.valueOf(board));
 
 		board = new TicTacToeBoard();
 		board.setMove(new Move(MoveSymbol.O, 1, 0));
 		board.setMove(new Move(MoveSymbol.O, 1, 1));
 		board.setMove(new Move(MoveSymbol.O, 1, 2));
 
-		assertEquals(GameResult.O_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.O, GameResult.valueOf(board));
 
 		board = new TicTacToeBoard();
 		board.setMove(new Move(MoveSymbol.X, 2, 0));
 		board.setMove(new Move(MoveSymbol.X, 2, 1));
 		board.setMove(new Move(MoveSymbol.X, 2, 2));
 
-		assertEquals(GameResult.X_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.X, GameResult.valueOf(board));
 	}
 
 	@Test
@@ -64,13 +64,13 @@ public class GameResultTest {
 		board.setMove(new Move(MoveSymbol.X, 1, 1));
 		board.setMove(new Move(MoveSymbol.X, 2, 2));
 
-		assertEquals(GameResult.X_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.X, GameResult.valueOf(board));
 
 		board = new TicTacToeBoard();
 		board.setMove(new Move(MoveSymbol.O, 2, 0));
 		board.setMove(new Move(MoveSymbol.O, 1, 1));
 		board.setMove(new Move(MoveSymbol.O, 0, 2));
 
-		assertEquals(GameResult.O_WON, GameResult.valueOf(board));
+		assertEquals(GameResult.O, GameResult.valueOf(board));
 	}
 }

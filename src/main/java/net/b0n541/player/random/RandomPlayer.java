@@ -3,6 +3,7 @@ package net.b0n541.player.random;
 import java.util.List;
 import java.util.Random;
 
+import net.b0n541.game.GameResult;
 import net.b0n541.player.AbstractPlayer;
 import net.b0n541.player.Move;
 import net.b0n541.player.TicTacToePlayer;
@@ -19,6 +20,11 @@ public class RandomPlayer extends AbstractPlayer implements TicTacToePlayer {
 
 	@Override
 	protected void prepareForGame() {
+		// nothing to do
+	}
+
+	@Override
+	public void finishGame(GameResult result) {
 		// nothing to do
 	}
 }

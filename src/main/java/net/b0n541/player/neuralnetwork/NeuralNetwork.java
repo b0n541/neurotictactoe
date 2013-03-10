@@ -51,7 +51,7 @@ public interface NeuralNetwork {
 	 *            Input attributes
 	 * @return Predicted outcome
 	 */
-	public abstract double getPredictedOutcome(double[] inputs);
+	public abstract double[] getPredictedOutcome(double[] inputs);
 
 	/**
 	 * Gets the number of iterations the NeuralNetwork was trained so far
@@ -81,5 +81,6 @@ public interface NeuralNetwork {
 	 * @param outputNeurons
 	 *            Number of output neurons
 	 */
-	public abstract void loadNetwork(String fileName, int inputNeurons, int hiddenNeurons, int outputNeurons);
+	public abstract void loadNetwork(String fileName, int inputNeurons,
+			int hiddenNeurons, int outputNeurons);
 }

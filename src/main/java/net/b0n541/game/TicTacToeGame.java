@@ -38,6 +38,10 @@ public class TicTacToeGame {
 				currPlayer.setNextMove(nextMove);
 			}
 		} while (getGameResult() == GameResult.UNDECIDED);
+
+		for (TicTacToePlayer currPlayer : player) {
+			currPlayer.finishGame(getGameResult());
+		}
 	}
 
 	private TicTacToePlayer getNextPlayer(int moveNo) {

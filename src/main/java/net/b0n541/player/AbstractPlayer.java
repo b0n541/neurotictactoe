@@ -8,12 +8,12 @@ import net.b0n541.board.TicTacToeBoard;
 
 public abstract class AbstractPlayer implements TicTacToePlayer {
 
-	protected TicTacToeBoard board;
+	protected TicTacToeBoard board = new TicTacToeBoard();
 	protected MoveSymbol symbol;
 
 	@Override
 	public final void startGame(MoveSymbol symbol) {
-		board = new TicTacToeBoard();
+		board.clear();
 		this.symbol = symbol;
 
 		prepareForGame();

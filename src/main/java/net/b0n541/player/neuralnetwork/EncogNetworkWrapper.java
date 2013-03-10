@@ -63,7 +63,8 @@ public class EncogNetworkWrapper implements NeuralNetwork {
 			network.addLayer(new BasicLayer(new ActivationSigmoid(), useBias,
 					topo.getHiddenNeuronCount(i)));
 		}
-		network.addLayer(new BasicLayer(new ActivationSigmoid(), useBias, 1));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(), useBias, topo
+				.getOutputNeuronCount()));
 		network.getStructure().finalizeStructure();
 		network.reset();
 
@@ -116,9 +117,9 @@ public class EncogNetworkWrapper implements NeuralNetwork {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public synchronized double getPredictedOutcome(final double[] inputValues) {
+	public synchronized double[] getPredictedOutcome(final double[] inputValues) {
 		MLData output = network.compute(new BasicMLData(inputValues));
-		return output.getData(0);
+		return output.getData();
 	}
 
 	/**
