@@ -18,7 +18,7 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 	private static final double INACTIVE = 0.0;
 	private static final double ACTIVE = 1.0;
 
-	int[] hiddenLayers = { 5 };
+	int[] hiddenLayers = { 10 };
 	NetworkTopology topo = new NetworkTopology(INPUT_COUNT, 3,
 			hiddenLayers.length, hiddenLayers);
 	NeuralNetwork network = new EncogNetworkWrapper(topo, true);
@@ -51,12 +51,18 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 
 		Move bestWonMove = null;
 		double bestWonOutcome = Double.MIN_VALUE;
+		Move bestLostMove = null;
+		double bestLostOutcome = Double.MIN_VALUE;
 		Move bestDrawMove = null;
 		double bestDrawOutcome = Double.MIN_VALUE;
 		for (Entry<Move, double[]> entry : moveOutputs.entrySet()) {
 			if (entry.getValue()[0] > bestWonOutcome) {
 				bestWonMove = entry.getKey();
 				bestWonOutcome = entry.getValue()[0];
+			}
+			if (entry.getValue()[1] > bestLostOutcome) {
+				bestLostMove = entry.getKey();
+				bestLostOutcome = entry.getValue()[1];
 			}
 			if (entry.getValue()[2] > bestDrawOutcome) {
 				bestDrawMove = entry.getKey();
@@ -65,11 +71,18 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 		}
 
 		Move result = null;
-		if (bestWonMove != null) {
-			result = bestWonMove;
-		} else if (bestDrawMove != null && bestDrawOutcome > bestWonOutcome) {
+		if (bestLostOutcome > bestWonOutcome
+				&& bestDrawOutcome > bestWonOutcome) {
 			result = bestDrawMove;
+		} else {
+			result = bestWonMove;
 		}
+		// if (bestWonMove != null) {
+		// result = bestWonMove;
+		// } else if (bestDrawMove != null && bestDrawOutcome > bestWonOutcome)
+		// {
+		// result = bestDrawMove;
+		// }
 
 		if (result == null) {
 			// play random move
