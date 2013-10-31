@@ -18,7 +18,7 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 	private static final double INACTIVE = 0.0;
 	private static final double ACTIVE = 1.0;
 
-	int[] hiddenLayers = { 18 };
+	int[] hiddenLayers = { 5 };
 	NetworkTopology topo = new NetworkTopology(INPUT_COUNT, 3,
 			hiddenLayers.length, hiddenLayers);
 	NeuralNetwork network = new EncogNetworkWrapper(topo, true);
@@ -50,9 +50,9 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 		}
 
 		Move bestWonMove = null;
-		double bestWonOutcome = 0.25;
+		double bestWonOutcome = Double.MIN_VALUE;
 		Move bestDrawMove = null;
-		double bestDrawOutcome = 0.5;
+		double bestDrawOutcome = Double.MIN_VALUE;
 		for (Entry<Move, double[]> entry : moveOutputs.entrySet()) {
 			if (entry.getValue()[0] > bestWonOutcome) {
 				bestWonMove = entry.getKey();
@@ -65,17 +65,17 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 		}
 
 		Move result = null;
-		if (bestWonMove != null && bestWonOutcome > 0.5) {
+		if (bestWonMove != null) {
 			result = bestWonMove;
+		} else if (bestDrawMove != null && bestDrawOutcome > bestWonOutcome) {
+			result = bestDrawMove;
 		}
-		// else if (bestDrawMove != null && bestDrawOutcome > bestWonOutcome) {
-		// result = bestDrawMove;
-		// }
 
 		if (result == null) {
 			// play random move
 			Random random = new Random();
 			result = possibleMoves.get(random.nextInt(possibleMoves.size()));
+			System.out.println("Playing random move.");
 		}
 
 		gameInputs.add(moveInputs.get(result));
@@ -88,16 +88,12 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 3; x++) {
 				if (board.getFieldValue(x, y) == null) {
-					// empty field
-					inputs[y * 3 + x] = INACTIVE;
-					inputs[INPUT_COUNT / 2 + y * 3 + x] = INACTIVE;
+					// do nothing
 				} else if (symbol == board.getFieldValue(x, y)) {
 					// players moves
 					inputs[y * 3 + x] = ACTIVE;
-					inputs[INPUT_COUNT / 2 + y * 3 + x] = INACTIVE;
 				} else if (symbol != board.getFieldValue(x, y)) {
 					// opponents moves
-					inputs[y * 3 + x] = INACTIVE;
 					inputs[INPUT_COUNT / 2 + y * 3 + x] = ACTIVE;
 				}
 			}
@@ -109,9 +105,12 @@ public class NeuralNetworkPlayer extends AbstractPlayer {
 	@Override
 	public void finishGame(GameResult result) {
 		double[] expectedOutput = getOutputsForGameResult(result);
+		Double errorSum = 0.0;
 		for (double[] input : gameInputs) {
-			network.adjustWeights(input, expectedOutput);
+			errorSum += network.adjustWeights(input, expectedOutput);
 		}
+		// System.out.println("Avg error: " + errorSum / gameInputs.size());
+		// System.out.println("Avg diff: " + network.getAvgDiff());
 	}
 
 	private double[] getOutputsForGameResult(GameResult result) {

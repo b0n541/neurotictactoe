@@ -32,9 +32,9 @@ public class NeuroTicTacToe {
 			gameNo++;
 			// results: X: 0.58 O: 0.28 Draw: 0.12
 			// TicTacToeGame game = new TicTacToeGame(rndPlayer, rndPlayer2);
-			TicTacToeGame game = new TicTacToeGame(nnPlayer, rndPlayer);
+			// TicTacToeGame game = new TicTacToeGame(nnPlayer, rndPlayer);
 			// TicTacToeGame game = new TicTacToeGame(rndPlayer, nnPlayer);
-			// TicTacToeGame game = new TicTacToeGame(nnPlayer, nnPlayer2);
+			TicTacToeGame game = new TicTacToeGame(nnPlayer, nnPlayer2);
 
 			game.run();
 
